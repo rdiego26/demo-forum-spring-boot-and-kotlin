@@ -47,4 +47,8 @@ class TopicService(private var topics: List<Topic>) {
     fun list(): List<Topic> {
         return topics
     }
+
+    fun findById(id: Long): Topic? {
+        return topics.find { id == it.id }
+    }
 }
