@@ -2,8 +2,8 @@ package br.com.alura.forum.controller
 
 import br.com.alura.forum.dto.CreateTopic
 import br.com.alura.forum.dto.TopicView
-import br.com.alura.forum.model.Topic
 import br.com.alura.forum.service.TopicService
+import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -22,7 +22,7 @@ class TopicController(private val service: TopicService) {
     }
 
     @PostMapping
-    fun create(@RequestBody dto: CreateTopic) {
+    fun create(@RequestBody @Valid dto: CreateTopic) {
         service.create(dto)
     }
 }
