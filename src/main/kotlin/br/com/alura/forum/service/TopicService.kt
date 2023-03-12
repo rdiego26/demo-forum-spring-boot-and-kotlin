@@ -45,4 +45,10 @@ class TopicService(
         )
         topics = topics.minus(fetchedTopic).plus(updatedTopic)
     }
+
+    fun delete(id: Long) {
+        val fetchedTopic = topics.find { id == it.id }
+        topics = topics.minus(fetchedTopic!!)
+
+    }
 }

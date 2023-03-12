@@ -31,4 +31,9 @@ class TopicController(private val service: TopicService) {
     fun update(@RequestBody @Valid dto: UpdateTopic) {
         service.update(dto)
     }
+
+    @DeleteMapping("/{id}")
+    fun delete(@PathVariable id: Long) {
+        service.delete(id)
+    }
 }
