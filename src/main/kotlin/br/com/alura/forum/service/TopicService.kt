@@ -25,10 +25,12 @@ class TopicService(
         return fetchedTopic.let { t -> topicViewMapper.map(t!!) }
     }
 
-    fun create(dto: CreateTopic) {
+    fun create(dto: CreateTopic): TopicView {
         val converted = topicCreatMapper.map(dto)
         converted.id = (topics.size + 1).toLong()
         topics = topics.plus(converted)
+
+        return topicViewMapper.map(converted)
     }
 
     fun update(dto: UpdateTopic) {

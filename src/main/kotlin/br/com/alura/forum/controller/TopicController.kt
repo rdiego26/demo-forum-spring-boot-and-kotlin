@@ -5,7 +5,9 @@ import br.com.alura.forum.dto.TopicView
 import br.com.alura.forum.dto.UpdateTopic
 import br.com.alura.forum.service.TopicService
 import jakarta.validation.Valid
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.util.UriComponentsBuilder
 import java.util.*
 
 @RestController
@@ -23,8 +25,14 @@ class TopicController(private val service: TopicService) {
     }
 
     @PostMapping
-    fun create(@RequestBody @Valid dto: CreateTopic) {
-        service.create(dto)
+    fun create(
+        @RequestBody @Valid dto: CreateTopic,
+        uriBuilder: UriComponentsBuilder
+    ): ResponseEntity<TopicView> {
+        val topicView = service.create(dto)
+        val uri = uriBuilder.path("/topics/${topicView.id}").build().toUri()
+
+        return ResponseEntity.created(uri).body(topicView)
     }
 
     @PutMapping
