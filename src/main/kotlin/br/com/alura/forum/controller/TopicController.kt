@@ -2,6 +2,7 @@ package br.com.alura.forum.controller
 
 import br.com.alura.forum.dto.CreateTopic
 import br.com.alura.forum.dto.TopicView
+import br.com.alura.forum.dto.UpdateTopic
 import br.com.alura.forum.service.TopicService
 import jakarta.validation.Valid
 import org.springframework.web.bind.annotation.*
@@ -24,5 +25,10 @@ class TopicController(private val service: TopicService) {
     @PostMapping
     fun create(@RequestBody @Valid dto: CreateTopic) {
         service.create(dto)
+    }
+
+    @PutMapping
+    fun update(@RequestBody @Valid dto: UpdateTopic) {
+        service.update(dto)
     }
 }

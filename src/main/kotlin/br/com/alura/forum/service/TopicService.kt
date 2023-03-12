@@ -2,11 +2,10 @@ package br.com.alura.forum.service
 
 import br.com.alura.forum.dto.CreateTopic
 import br.com.alura.forum.dto.TopicView
+import br.com.alura.forum.dto.UpdateTopic
 import br.com.alura.forum.mapper.TopicCreateMapper
 import br.com.alura.forum.mapper.TopicViewMapper
-import br.com.alura.forum.model.Course
 import br.com.alura.forum.model.Topic
-import br.com.alura.forum.model.User
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
@@ -30,5 +29,20 @@ class TopicService(
         val converted = topicCreatMapper.map(dto)
         converted.id = (topics.size + 1).toLong()
         topics = topics.plus(converted)
+    }
+
+    fun update(dto: UpdateTopic) {
+        val fetchedTopic = topics.find { dto.id == it.id }
+        val updatedTopic = Topic(
+            id = fetchedTopic?.id,
+            title = dto.title,
+            message = dto.message,
+            author = fetchedTopic!!.author,
+            course = fetchedTopic.course,
+            answers = fetchedTopic.answers,
+            status = fetchedTopic.status,
+            createdAt = fetchedTopic.createdAt
+        )
+        topics = topics.minus(fetchedTopic).plus(updatedTopic)
     }
 }
