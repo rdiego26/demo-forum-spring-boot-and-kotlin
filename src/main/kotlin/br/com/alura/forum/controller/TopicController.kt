@@ -36,8 +36,13 @@ class TopicController(private val service: TopicService) {
     }
 
     @PutMapping
-    fun update(@RequestBody @Valid dto: UpdateTopic) {
-        service.update(dto)
+    fun update(
+        @RequestBody @Valid dto: UpdateTopic,
+        uriBuilder: UriComponentsBuilder
+    ): ResponseEntity<TopicView> {
+        val topicView = service.update(dto)
+
+        return ResponseEntity.ok(topicView)
     }
 
     @DeleteMapping("/{id}")

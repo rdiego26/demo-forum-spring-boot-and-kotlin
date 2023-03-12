@@ -33,7 +33,7 @@ class TopicService(
         return topicViewMapper.map(converted)
     }
 
-    fun update(dto: UpdateTopic) {
+    fun update(dto: UpdateTopic): TopicView {
         val fetchedTopic = topics.find { dto.id == it.id }
         val updatedTopic = Topic(
             id = fetchedTopic?.id,
@@ -46,6 +46,8 @@ class TopicService(
             createdAt = fetchedTopic.createdAt
         )
         topics = topics.minus(fetchedTopic).plus(updatedTopic)
+
+        return topicViewMapper.map(updatedTopic)
     }
 
     fun delete(id: Long) {
