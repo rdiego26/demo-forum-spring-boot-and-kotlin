@@ -5,6 +5,7 @@ import br.com.alura.forum.dto.TopicView
 import br.com.alura.forum.dto.UpdateTopic
 import br.com.alura.forum.service.TopicService
 import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.util.UriComponentsBuilder
@@ -46,6 +47,7 @@ class TopicController(private val service: TopicService) {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun delete(@PathVariable id: Long) {
         service.delete(id)
     }
