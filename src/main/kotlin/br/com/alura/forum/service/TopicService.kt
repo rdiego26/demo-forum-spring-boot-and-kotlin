@@ -3,6 +3,7 @@ package br.com.alura.forum.service
 import br.com.alura.forum.dto.CreateTopic
 import br.com.alura.forum.dto.TopicView
 import br.com.alura.forum.dto.UpdateTopic
+import br.com.alura.forum.exception.NotFoundException
 import br.com.alura.forum.mapper.TopicCreateMapper
 import br.com.alura.forum.mapper.TopicViewMapper
 import br.com.alura.forum.model.Topic
@@ -13,7 +14,8 @@ import java.util.stream.Collectors
 class TopicService(
     private var topics: List<Topic> = listOf(),
     private val topicViewMapper: TopicViewMapper,
-    private val topicCreatMapper: TopicCreateMapper
+    private val topicCreatMapper: TopicCreateMapper,
+    private val notFoundMessage: String = "Topic not found!"
 ) {
 
     fun list(): List<TopicView> {
@@ -34,7 +36,10 @@ class TopicService(
     }
 
     fun update(dto: UpdateTopic): TopicView {
-        val fetchedTopic = topics.find { dto.id == it.id }
+        val fetchedTopic = topics.stream().filter {
+            dto.id == it.id
+        }.findFirst().orElseThrow { NotFoundException(notFoundMessage) }
+
         val updatedTopic = Topic(
             id = fetchedTopic?.id,
             title = dto.title,
@@ -51,8 +56,10 @@ class TopicService(
     }
 
     fun delete(id: Long) {
-        val fetchedTopic = topics.find { id == it.id }
-        topics = topics.minus(fetchedTopic!!)
+        val fetchedTopic = topics.stream().filter { t ->
+            t.id == id
+        }.findFirst().orElseThrow { NotFoundException(notFoundMessage) }
 
+        topics = topics.minus(fetchedTopic!!)
     }
 }
