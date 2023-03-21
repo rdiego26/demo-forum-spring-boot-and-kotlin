@@ -7,38 +7,38 @@ import br.com.alura.forum.exception.NotFoundException
 import br.com.alura.forum.mapper.TopicCreateMapper
 import br.com.alura.forum.mapper.TopicViewMapper
 import br.com.alura.forum.model.Topic
+import br.com.alura.forum.repository.TopicRepository
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
 @Service
 class TopicService(
-    private var topics: List<Topic> = listOf(),
+    private val repository: TopicRepository,
     private val topicViewMapper: TopicViewMapper,
     private val topicCreatMapper: TopicCreateMapper,
     private val notFoundMessage: String = "Topic not found!"
 ) {
 
     fun list(): List<TopicView> {
-        return topics.stream().map { t -> topicViewMapper.map(t) }.collect(Collectors.toList())
+        return repository.findAll().stream().map { t -> topicViewMapper.map(t) }.collect(Collectors.toList())
     }
 
     fun findById(id: Long): TopicView? {
-        val fetchedTopic = topics.find { id == it.id }
-        return fetchedTopic.let { t -> topicViewMapper.map(t!!) }
+        val fetchedTopic = repository.findById(id).orElseThrow { throw NotFoundException(notFoundMessage) }
+
+        return fetchedTopic.let { t -> topicViewMapper.map(t) }
     }
 
     fun create(dto: CreateTopic): TopicView {
         val converted = topicCreatMapper.map(dto)
-        converted.id = (topics.size + 1).toLong()
-        topics = topics.plus(converted)
+        converted.id = (repository.count() + 1)
+        repository.save(converted)
 
         return topicViewMapper.map(converted)
     }
 
     fun update(dto: UpdateTopic): TopicView {
-        val fetchedTopic = topics.stream().filter {
-            dto.id == it.id
-        }.findFirst().orElseThrow { NotFoundException(notFoundMessage) }
+        val fetchedTopic = repository.findById(dto.id).orElseThrow { throw NotFoundException(notFoundMessage) }
 
         val updatedTopic = Topic(
             id = fetchedTopic?.id,
@@ -50,16 +50,14 @@ class TopicService(
             status = fetchedTopic.status,
             createdAt = fetchedTopic.createdAt
         )
-        topics = topics.minus(fetchedTopic).plus(updatedTopic)
+        repository.save(updatedTopic)
 
         return topicViewMapper.map(updatedTopic)
     }
 
     fun delete(id: Long) {
-        val fetchedTopic = topics.stream().filter { t ->
-            t.id == id
-        }.findFirst().orElseThrow { NotFoundException(notFoundMessage) }
+        val fetchedTopic = repository.findById(id).orElseThrow { throw NotFoundException(notFoundMessage) }
 
-        topics = topics.minus(fetchedTopic!!)
+        repository.delete(fetchedTopic)
     }
 }
