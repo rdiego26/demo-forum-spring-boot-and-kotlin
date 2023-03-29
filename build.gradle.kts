@@ -27,6 +27,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-maven-noarg")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	runtimeOnly("org.flywaydb:flyway-gradle-plugin:9.15.2")
 }
 
 tasks.withType<KotlinCompile> {
