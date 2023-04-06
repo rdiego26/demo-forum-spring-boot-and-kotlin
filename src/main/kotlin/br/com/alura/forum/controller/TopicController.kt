@@ -17,8 +17,8 @@ import java.util.*
 class TopicController(private val service: TopicService) {
 
     @GetMapping
-    fun list(): List<TopicView> {
-        return service.list()
+    fun list(@RequestParam(required = false) courseName: String?): List<TopicView> {
+        return service.list(courseName)
     }
 
     @GetMapping("/{id}")

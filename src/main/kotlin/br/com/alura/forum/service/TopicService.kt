@@ -19,8 +19,13 @@ class TopicService(
     private val notFoundMessage: String = "Topic not found!"
 ) {
 
-    fun list(): List<TopicView> {
-        return repository.findAll().stream().map { t -> topicViewMapper.map(t) }.collect(Collectors.toList())
+    fun list(courseName: String? = null): List<TopicView> {
+        val topics: List<TopicView> = if (courseName.isNullOrBlank()) {
+            repository.findAll().stream().map { t -> topicViewMapper.map(t) }.collect(Collectors.toList())
+        } else {
+            repository.findByCourseName(courseName).stream().map { t -> topicViewMapper.map(t) }.collect(Collectors.toList())
+        }
+        return topics
     }
 
     fun findById(id: Long): TopicView? {
@@ -31,7 +36,6 @@ class TopicService(
 
     fun create(dto: CreateTopic): TopicView {
         val converted = topicCreatMapper.map(dto)
-        converted.id = (repository.count() + 1)
         repository.save(converted)
 
         return topicViewMapper.map(converted)
