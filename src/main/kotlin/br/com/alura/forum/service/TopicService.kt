@@ -8,6 +8,8 @@ import br.com.alura.forum.mapper.TopicCreateMapper
 import br.com.alura.forum.mapper.TopicViewMapper
 import br.com.alura.forum.model.Topic
 import br.com.alura.forum.repository.TopicRepository
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import java.util.stream.Collectors
 
@@ -19,11 +21,11 @@ class TopicService(
     private val notFoundMessage: String = "Topic not found!"
 ) {
 
-    fun list(courseName: String? = null): List<TopicView> {
-        val topics: List<TopicView> = if (courseName.isNullOrBlank()) {
-            repository.findAll().stream().map { t -> topicViewMapper.map(t) }.collect(Collectors.toList())
+    fun list(courseName: String? = null, pagination: Pageable): Page<TopicView> {
+        val topics: Page<TopicView> = if (courseName.isNullOrBlank()) {
+            repository.findAll(pagination).map { t -> topicViewMapper.map(t) }
         } else {
-            repository.findByCourseName(courseName).stream().map { t -> topicViewMapper.map(t) }.collect(Collectors.toList())
+            repository.findByCourseName(courseName, pagination).map { t -> topicViewMapper.map(t) }
         }
         return topics
     }

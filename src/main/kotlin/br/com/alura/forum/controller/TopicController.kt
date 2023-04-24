@@ -5,6 +5,8 @@ import br.com.alura.forum.dto.TopicView
 import br.com.alura.forum.dto.UpdateTopic
 import br.com.alura.forum.service.TopicService
 import jakarta.validation.Valid
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.transaction.annotation.Transactional
@@ -17,8 +19,9 @@ import java.util.*
 class TopicController(private val service: TopicService) {
 
     @GetMapping
-    fun list(@RequestParam(required = false) courseName: String?): List<TopicView> {
-        return service.list(courseName)
+    fun list(@RequestParam(required = false) courseName: String?,
+             pagination: Pageable): Page<TopicView> {
+        return service.list(courseName, pagination)
     }
 
     @GetMapping("/{id}")
