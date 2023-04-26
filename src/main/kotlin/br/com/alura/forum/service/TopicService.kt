@@ -1,6 +1,7 @@
 package br.com.alura.forum.service
 
 import br.com.alura.forum.dto.CreateTopic
+import br.com.alura.forum.dto.TopicByCategoryDto
 import br.com.alura.forum.dto.TopicView
 import br.com.alura.forum.dto.UpdateTopic
 import br.com.alura.forum.exception.NotFoundException
@@ -65,5 +66,9 @@ class TopicService(
         val fetchedTopic = repository.findById(id).orElseThrow { throw NotFoundException(notFoundMessage) }
 
         repository.delete(fetchedTopic)
+    }
+
+    fun report(): List<TopicByCategoryDto> {
+        return repository.report()
     }
 }
